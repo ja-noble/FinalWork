@@ -13,6 +13,8 @@ def check_events(mc):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        # elif mc.rect.colliderect(wall.rect):
+        #     if 
         elif event.type == pygame.KEYDOWN:
             #Movement of the character
             if event.key == pygame.K_RIGHT:
@@ -24,6 +26,7 @@ def check_events(mc):
             if event.key == pygame.K_LEFT:
                 mc.move_left = True
         elif event.type == pygame.KEYUP:
+            #toggles T/F and in mc class, will move if key down
             if event.key == pygame.K_RIGHT:
                 mc.move_right = False
             if event.key == pygame.K_UP:
@@ -33,6 +36,7 @@ def check_events(mc):
             if event.key == pygame.K_LEFT:
                 mc.move_left = False
 
+
 # def check_pushing_command(mc):
 #     for event in pygame.event.get():
 #         if event.type == pygame.KEYDOWN:
@@ -40,6 +44,6 @@ def check_events(mc):
 #                 print("This will be the pushing the boxes for puzzle")
             
 def update_screen(settings, screen, hero, box):
-    hero.blitme()
-    box.blitme()
+    # hero.blitme()
+    # box.blitme()
     pygame.display.flip()

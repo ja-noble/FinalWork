@@ -28,9 +28,9 @@ class Character():
         self.screen.blit(self.image, self.rect)
     def update(self):
         if self.move_up == True:
-            self.rect.centery+=1
-        if self.move_down == True:
             self.rect.centery-=1
+        if self.move_down == True:
+            self.rect.centery+=1
         if self.move_left == True:
             self.rect.centerx-=1
         if self.move_right == True:
