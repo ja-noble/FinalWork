@@ -1,5 +1,7 @@
 #original code, based on what i need for walls and surface detection
 
+import pygame 
+
 # class Wall():
 #     def __init__(self, screen):
 #         self.screen = screen
@@ -9,12 +11,16 @@
 #     def blitme(self, screen):
 #         self.screen.blit(self.image, self.rect)
 
-walls = []
 
-class Wall(object):   
-    def __init__(self, pos, screen):
-        self.screen = screen
-        walls.append(self)
-        self.rect = pygame.Rect(pos[0], pos[1], 16, 16)
-        self.screen_rect = screen.get_rect()
+class Wall(pygame.sprite.Sprite):   
+    def __init__(self, pos, width, height, color):
+        super().__init__()
+        # Make a BLUE wall, of the size specified in the parameters
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.y = pos[1]
+        self.rect.x = pos[0]
+
 

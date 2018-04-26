@@ -44,6 +44,7 @@ def check_events(mc):
 #                 print("This will be the pushing the boxes for puzzle")
             
 def update_screen(settings, screen, hero, box):
-    # hero.blitme()
+    hero.blitme()
+    
     # box.blitme()
     pygame.display.flip()
