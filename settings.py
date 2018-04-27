@@ -4,5 +4,5 @@ class Settings():
         self.screen_height = 800
         self.color = [255, 255, 255]
         self.box_color = [0, 0, 255]
-        self.box_width = 16
-        self.box_height = 16
+        self.box_width = 35
+        self.box_height = 35

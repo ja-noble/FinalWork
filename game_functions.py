@@ -13,8 +13,6 @@ def check_events(mc):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        # elif mc.rect.colliderect(wall.rect):
-        #     if 
         elif event.type == pygame.KEYDOWN:
             #Movement of the character
             if event.key == pygame.K_RIGHT:
@@ -43,8 +41,8 @@ def check_events(mc):
 #             if event.type == pygame.K_SPACE:
 #                 print("This will be the pushing the boxes for puzzle")
             
-def update_screen(settings, screen, hero, box):
+def update_screen(settings, screen, hero, box, walls):
     hero.blitme()
-    
+    # hero.did_hit(walls)
     # box.blitme()
     pygame.display.flip()

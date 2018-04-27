@@ -30,10 +30,19 @@ gameboard_1 = [                                                                 
     "W                                      W",
     "W                                      W",
     "W                                      W",
-    "W          C                           W",
+    "W                                      W",
+    "W                                      W",
+    "W                                      W",
+    "W                 C                    W",
+    "W                                      W",
+    "W                                      W",
+    "W                                      W",
+    "W                                      W",
+    "W                                      W",
     "W                                      W",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
 ]
+FPS = 1
 
 
 def run_game():
@@ -47,23 +56,25 @@ def run_game():
     for row in gameboard_1:
         for column in row:
             #up here, i am transversing through the list to draw the level
-            pos = [x_level_coor, y_level_coor]
+            pos = [x_level_coor*10, y_level_coor*10]
             if column == "W":
                 wall = Wall(pos, settings.box_width, settings.box_height, settings.box_color)
                 walls.add(wall)
-                print("this if works")
+                #print("this if works")
             elif column == "C":
-                pos_hero = [x_level_coor, y_level_coor]
+                pos_hero = [x_level_coor*10, y_level_coor*10]
             x_level_coor += 1
         y_level_coor += 1
         x_level_coor = 0
+    print(pos_hero)
     hero = mc(screen, pos_hero)
     box = Box(screen)
     while True:
         gf.check_events(hero)
         hero.update()
+        hero.did_hit(walls)
         walls.draw(screen)
         #this updates hero position all the time
-        gf.update_screen(settings, screen, hero, box)
+        gf.update_screen(settings, screen, hero, box, walls)
 
 run_game()
