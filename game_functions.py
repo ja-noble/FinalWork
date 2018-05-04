@@ -8,6 +8,7 @@ from wall import Wall
 
 settings = Settings() 
 screen = pygame.display.set_mode([settings.screen_width, settings.screen_height])
+dirty_rect = []
 
 def check_events(mc): 
     # while True:
@@ -34,16 +35,8 @@ def check_events(mc):
                 mc.move_down = False
             if event.key == pygame.K_LEFT:
                 mc.move_left = False
-
-
-# def check_pushing_command(mc):
-#     for event in pygame.event.get():
-#         if event.type == pygame.KEYDOWN:
-#             if event.type == pygame.K_SPACE:
-#                 print("This will be the pushing the boxes for puzzle")
             
 def update_screen(settings, screen, hero, box, walls):
     hero.blitme()
     hero.did_hit(walls)
     pygame.display.flip()
-    pygame.display.update()

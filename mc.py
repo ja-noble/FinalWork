@@ -54,9 +54,17 @@ class Character(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
         #^ these are movement flags
+    def change_image(self):
+        if self.direction == "U":
+            self.image = pygame.image.load(self.up1)
+        elif self.direction == "D":
+            self.image = pygame.image.load(self.down1)
+        elif self.direction == "L":
+            self.image = pygame.image.load(self.left1)
+        elif self.direction == "R":
+            self.image = pygame.image.load(self.left1.flip())
     def blitme(self):
         #this draws the character... or it should
-        # self.screen.blit(self.background, pos[0], position[1])
         self.screen.blit(self.image, self.rect)
     def update(self):
         if self.move_up == True:
