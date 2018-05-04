@@ -6,7 +6,9 @@
 #   moving onto working with sprite sheets with pygame.Sprite.sprite in mc class and i think i got surface detection using pygame.rect.colliderect()
 #   but i have yet to test it yet! Once i get done with mc sprite + surface detection i'll move onto making the gameboard for the first level!
 # week 4: got continuous movement, pushed back sprite sheet work (i'll take care of that last), moving along with wall detection + using a gameboard
-
+# week 5: got surface detection working, with gameboard transversal working.
+# week 6: sprite sheet work borrowing from link_char_sprite sheet, need to fix weird problem where it blits another mc everytime it hits a wall... idk
+#week 7? fixed the problem that blit every time a 
 import pygame
 import sys
 from settings import Settings
@@ -15,34 +17,45 @@ from box import Box
 import game_functions as gf
 from wall import Wall
 
-
 clock = pygame.time.Clock()
 walls = None #to store wall objects
 walls = pygame.sprite.Group()
 gameboard_1 = [                                                                     # this will be the level
-    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                 C                    W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "W                                      W",
-    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                       WWWWWWWWWWWWWWWWWWWWWWWWWWWWW                          W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                    C                                         W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "W                                                                              W",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
 ]
-FPS = 1
 
 
 def run_game():
@@ -58,21 +71,21 @@ def run_game():
             #up here, i am transversing through the list to draw the level
             pos = [x_level_coor*10, y_level_coor*10]
             if column == "W":
-                wall = Wall(pos, settings.box_width, settings.box_height, settings.box_color)
+                wall = Wall(pos, settings.wall_width, settings.wall_height, settings.wall_color)
                 walls.add(wall)
                 #print("this if works")
             elif column == "C":
                 pos_hero = [x_level_coor*10, y_level_coor*10]
+            # else:
+            #     screen.blit()
             x_level_coor += 1
         y_level_coor += 1
         x_level_coor = 0
-    print(pos_hero)
     hero = mc(screen, pos_hero)
     box = Box(screen)
     while True:
         gf.check_events(hero)
         hero.update()
-        hero.did_hit(walls)
         walls.draw(screen)
         #this updates hero position all the time
         gf.update_screen(settings, screen, hero, box, walls)

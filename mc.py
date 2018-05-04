@@ -5,39 +5,40 @@ import pygame
 #import pygame.sprite
 from wall import Wall
 from box import Box
-from sprite_sheets import SpriteSheets
+import pyganim
+from settings import Settings
+
+settings = Settings()
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, screen, pos):
         super().__init__()
         #this initializes what i need
         self.screen = screen
-        # self.image = pygame.image.load('images/char.PNG')
-        # self.image = pygame.transform.scale(self.image, (35, 35))
-
-        self.walking_frames_L = []
-        self.walking_frames_R = []
-        self.walking_frames_U = []
-        self.walking_frames_D = []
-        self.standing_frames = []
-
-        #these hold my sprite sheets
+        #################################
+        self.down1 = 'images/link_down1.png'
+        self.down2 = 'images/link_down2.png'
+        self.up1   = 'images/link_up1.png'
+        self.up2   = 'images/link_up2.png'
+        self.left1 = 'images/link_left1.png'
+        self.left2 = 'images/link_left2.png'
+        # self.right1 = pygame.transform.flip(self.left1, False, True), (settings.mc_height, settings.mc_width)
+        # self.walkingAnim[DOWN] = pyganim.PygAnimation(((self.down1, ANIMRATE), (self.down2, ANIMRATE)))
+        # self.walkingAnim[UP]   = pyganim.PygAnimation(((self.up1, ANIMRATE), (self.up2, ANIMRATE)))
+        # self.walkingAnim[LEFT] = pyganim.PygAnimation(((self.left1, ANIMRATE), (self.left2, ANIMRATE)))
+        # # create the right-facing sprites by copying and flipping the left-facing sprites
+        # self.walkingAnim[RIGHT] = self.walkingAnim[LEFT].getCopy()
+        # self.walkingAnim[RIGHT].flip(True, False)
+        # self.walkingAnim[RIGHT].makeTransformsPermanent()
+        # resize the Link images to match the window's magnification
+        # for i in self.walkingAnim:
+        #     self.walkingAnim[i].scale((settings.mc_width, settings.mc_height))
+        #     self.walkingAnim[i].makeTransformsPermanent()
+        ################################################## everything between these comments are straight from nes_link_game
+        self.image = pygame.image.load(self.down1)
+        self.image = pygame.transform.scale(self.image, (35, 35))
+        self.background = pygame.image.load('images/tile-background-4.jpg')
         self.direction = "U"
-        spritesheet = SpriteSheets("images/link_char_sprite.PNG")
-        image = spritesheet.get_image(0, 0, 35, 35)
-        self.walking_frames_U.append(image)
-        image = spritesheet.get_image(66, 0, 35, 35)
-        self.walking_frames_U.append(image)
-        image = spritesheet.get_image(132, 0, 35, 35)
-        self.walking_frames_U.append(image)
-        image = spritesheet.get_image(0, 93, 35, 35)
-        self.walking_frames_U.append(image)
-        image = spritesheet.get_image(66, 93, 35, 35)
-        self.walking_frames_U.append(image)
-        image = spritesheet.get_image(132, 93, 35, 35)
-        self.walking_frames_U.append(image)
-        image = spritesheet.get_image(0, 186, 35, 35)
-        self.walking_frames_U.append(image)
         #hp will be used not a hp but how much mc can push
         self.hp = 1000
         self.rect = self.image.get_rect()
@@ -55,67 +56,51 @@ class Character(pygame.sprite.Sprite):
         #^ these are movement flags
     def blitme(self):
         #this draws the character... or it should
+        # self.screen.blit(self.background, pos[0], position[1])
         self.screen.blit(self.image, self.rect)
     def update(self):
         if self.move_up == True:
+            self.direction = "U"
             self.rect.y-=1
             if self.y_change < 0:
                 self.y_change = 0
             self.y_change -= 1
         if self.move_down == True:
+            self.direction = "D"
             self.rect.y+=1
             if self.y_change < 0:
                 self.y_change = 0
             self.y_change += 1
         if self.move_left == True:
+            self.direction = "L"
             self.rect.x-=1
             if self.x_change > 0:
                 self.x_change = 0
             self.x_change -= 1
         if self.move_right == True:
+            self.direction = "R"
             self.rect.x+=1
             if self.x_change < 0:
                 self.x_change = 0
             self.x_change += 1
+    #version 2 wall detection... need to fix situation where it blits multiple mc's
     def did_hit(self, walls):
-        block_hit_list = pygame.sprite.spritecollide(self, walls, False)
-        for block in block_hit_list:
-            #from http://programarcadegames.com/python_examples/show_file.php?file=maze_runner.py, retrofitted by me
-            if self.x_change > 0:
-                self.rect.x = block.rect.left
-            else:
-                # Otherwise if we are moving left, do the opposite.
-                self.rect.x = block.rect.right
-        for block in block_hit_list:
-            # Reset our position based on the top/bottom of the object.
-            if self.y_change > 0:
-                self.rect.y = block.rect.top
-            else:
-                self.rect.y = block.rect.bottom
-
-
-# #from code pilot
-# class spritesheet():
-# 	def __init__(self, filename, cols, rows):
-# 		self.sheet = pygame.image.load(filename).convert_alpha()
-		
-# 		self.cols = cols
-# 		self.rows = rows
-# 		self.totalCellCount = cols * rows
-		
-# 		self.rect = self.sheet.get_rect()
-# 		w = self.cellWidth = self.rect.width / cols
-# 		h = self.cellHeight = self.rect.height / rows
-# 		hw, hh = self.cellCenter = (w / 2, h / 2)
-		
-# 		self.cells = list([(index % cols * w, index / cols * h, w, h) for index in range(self.totalCellCount)])
-# 		self.handle = list([
-# 			(0, 0), (-hw, 0), (-w, 0),
-# 			(0, -hh), (-hw, -hh), (-w, -hh),
-# 			(0, -h), (-hw, -h), (-w, -h),])
-		
-# 	def draw(self, surface, cellIndex, x, y, handle = 0):
-# 		surface.blit(self.sheet, (x + self.handle[handle][0], y + self.handle[handle][1]), self.cells[cellIndex])
+        for wall in walls:
+            if self.rect.colliderect(wall.rect):
+                if self.x_change > 0: # Moving right; Hit the left side of the wall
+                    # self.rect.right = wall.rect.left
+                    self.move_right = False
+                if self.x_change < 0: # Moving left; Hit the right side of the wall
+                    # self.rect.left = wall.rect.right
+                    self.move_left = False
+                if self.y_change > 0: # Moving down; Hit the top side of the wall
+                    # self.rect.bottom = wall.rect.top
+                    self.move_down = False
+                    self.move_up = False
+                if self.y_change < 0: # Moving up; Hit the bottom side of the wall
+                    # self.rect.top = wall.rect.bottom
+                    self.move_up = False
+                    self.move_down = False
 
         
         

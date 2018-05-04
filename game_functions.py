@@ -1,4 +1,5 @@
 #code from crash course, mostly
+#made did_hit myself after learning how to use colliderect
 import sys
 import pygame
 from mc import Character as mc
@@ -43,6 +44,6 @@ def check_events(mc):
             
 def update_screen(settings, screen, hero, box, walls):
     hero.blitme()
-    # hero.did_hit(walls)
-    # box.blitme()
+    hero.did_hit(walls)
     pygame.display.flip()
+    pygame.display.update()
