@@ -17,6 +17,8 @@
 # TODO: autoplay member for the ctor
 # TODO: sprite sheet support
 
+#JACOB: this was supposed to be for animation to make link actually walk but no time left lol
+
 
 import pygame, time
 

@@ -1,5 +1,7 @@
 #from http://programarcadegames.com/python_examples/en/sprite_sheets/
 
+#supposed to be for spritesheet animation but whatever took too long
+
 import pygame
 import settings
 

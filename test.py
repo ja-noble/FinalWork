@@ -183,6 +183,9 @@ http://programarcadegames.com/python_examples/f.php?file=platform_scroller.py
 http://programarcadegames.com/python_examples/f.php?file=platform_moving.py
 http://programarcadegames.com/python_examples/sprite_sheets/
 """
+
+#this was all for testing the code i did take from, see how it works
+
 import pygame
  
 BLACK = (0, 0, 0)

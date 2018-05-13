@@ -28,10 +28,13 @@ def check_events(mc, boxes, walls):
                 mc.move_left = True
             if event.key == pygame.K_SPACE:
                 mc.move_box(boxes, walls)
-                mc.box_hit_rect(boxes, walls)
+                mc.box_hit_wall(boxes, walls)
+                mc.box_hit_box(boxes)
             if event.key == pygame.K_y:
                 print(mc.rect.x)
                 print(mc.rect.y)
+            if event.key == pygame.K_b:
+                mc.waiting = False
         elif event.type == pygame.KEYUP:
             #toggles T/F and in mc class, will move if key down
             if event.key == pygame.K_d:
@@ -46,16 +49,23 @@ def check_events(mc, boxes, walls):
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             print(mouse_pos)
- #this function is original!  
+            #this event is for my own debugging, i used this to tell where I am in the gameboard
+            #and how to access specific points. I got mouse.get_pos() and mousebuttonup from pygame.org
 
-         
+#this function's idea is from python crash course, i then made my own functions
 def update_screen(settings, screen, hero, walls, boxes):
     hero.blitme()
+    #crash course
     hero.did_hit(walls)
+    #original, for need of surface detection
     hero.did_hit_box(boxes)
+    #ditto ^
     pygame.display.flip()
+    #i still don't know what this does lol ^
     hero.change_image()
+    #original code, to change direction of link
 
-def finish(mc, finish):
+def finish(mc, finish, game_over):
     if finish.rect.contains(mc.rect):
-        print("you finished!")   
+        game_over = True  
+# for game over screen, my own code
