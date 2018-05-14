@@ -7,9 +7,6 @@ from settings import Settings
 from wall import Wall
 from wall import Box
 
-settings = Settings() 
-screen = pygame.display.set_mode([settings.screen_width, settings.screen_height])
-dirty_rect = []
 
 def check_events(mc, boxes, walls): 
     # while True:
@@ -17,7 +14,7 @@ def check_events(mc, boxes, walls):
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            #Movement of the character
+            #Movement of the character, from crash course
             if event.key == pygame.K_d:
                 mc.move_right = True
             if event.key == pygame.K_w:
@@ -33,10 +30,13 @@ def check_events(mc, boxes, walls):
             if event.key == pygame.K_y:
                 print(mc.rect.x)
                 print(mc.rect.y)
+                #this is for debugging so i know where the player is exactly
             if event.key == pygame.K_b:
                 mc.waiting = False
+                if mc.game_over == False:
+                    pygame.mixer.music.play(-1)
         elif event.type == pygame.KEYUP:
-            #toggles T/F and in mc class, will move if key down
+            #toggles T/F and in mc class, will move if key down, from crash course
             if event.key == pygame.K_d:
                 mc.move_right = False
             if event.key == pygame.K_w:
@@ -45,7 +45,6 @@ def check_events(mc, boxes, walls):
                 mc.move_down = False
             if event.key == pygame.K_a:
                 mc.move_left = False
-                #this event is for debugging! And I guess if you want to 
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             print(mouse_pos)
@@ -64,8 +63,3 @@ def update_screen(settings, screen, hero, walls, boxes):
     #i still don't know what this does lol ^
     hero.change_image()
     #original code, to change direction of link
-
-def finish(mc, finish, game_over):
-    if finish.rect.contains(mc.rect):
-        game_over = True  
-# for game over screen, my own code

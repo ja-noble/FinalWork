@@ -8,14 +8,15 @@ from wall import Box
 import pyganim
 from settings import Settings
 
+#need settings because i use it to give the images the dimensions to scale to
 settings = Settings()
-push = False
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, screen, pos):
         super().__init__()
         #this initializes what i need
         self.screen = screen
+
         ################################# i took the images from nes_zelda_map_data_master! from canvas
         self.down1 = 'images/link_down1.png'
         # self.down2 = 'images/link_down2.png'
@@ -23,8 +24,8 @@ class Character(pygame.sprite.Sprite):
         # self.up2   = 'images/link_up2.png'
         self.left1 = 'images/link_left1.png'
         ################################################## everything between these comments are straight from nes_link_game
-        
-        #these are original between these, this is to switch between the four images
+
+        #these are the different images to be blitted based on which direction the player is facing
         self.image = pygame.image.load(self.down1)
 
         self.down_image = pygame.image.load(self.down1)
@@ -39,7 +40,7 @@ class Character(pygame.sprite.Sprite):
 
         self.right1 = pygame.transform.flip(self.left_image, True, False)
         #i took transform.flip from pygame.org
-        #these are original beween these comments ^^^
+        #these are original between these comments ^^^
 
         self.direction = "U"
         #this is to set the direction link is facing
@@ -47,8 +48,8 @@ class Character(pygame.sprite.Sprite):
         # self.background = pygame.image.load('images/tile-background-4.jpg')
         # #this is the background that will be used for the game... but i didn't use it lol
 
-        #hp will be used not a hp but how much mc can push
-        self.hp = 1000
+        #score will be used not as score... persay but how much mc can push
+        self.score = 76
         self.rect = self.image.get_rect()
         #this is the rectangle i'm working with for the MC
         self.rect.x = pos[0]
@@ -65,9 +66,12 @@ class Character(pygame.sprite.Sprite):
 
         self.x_change = 0
         self.y_change = 0
-        #^ these are movement flags
-        self.waiting = True
+        #this is used to show if link is facing left, right, up, or down...
 
+        self.waiting = True
+        #waiting screen
+        self.game_over = False
+        #game over screen
     def change_image(self):
         if self.direction == "U":
             self.image = self.up_image
@@ -79,10 +83,11 @@ class Character(pygame.sprite.Sprite):
             self.image = self.right1
         #this function changes the image to be blitted! based on direction link faces, self.image will be facing that direction
 
+#from python crash course
     def blitme(self):
         #this draws the character... or it should
         self.screen.blit(self.image, self.rect)
-
+#1/2 from crash course, 1/2 original
     def update(self):
         if self.move_up == True:
             self.direction = "U"
@@ -112,52 +117,41 @@ class Character(pygame.sprite.Sprite):
                 self.y_change = 0
             self.rect.x +=1
             self.x_change += 1
-#ok this function is a busy one.
+#ok this function is a busy one. So the directional stuff should be easy, if the movement flag is true, then move x/y.
+#But then i needed a new variable to use to tell the program which direction link is facing, x_change and y_change.
+# after second look, maybe i couldve just used self.direction and saved a few lines
 
-    #version 2 wall detection... need to fix situation where it blits multiple mc's
+    #version 2 wall detection... need to fix situation where it blits multiple mc's, got idea from programarcadegames.com
     def did_hit(self, walls):
         for wall in walls:
             if self.rect.colliderect(wall.rect):
                 if self.x_change > 0: # Moving right; Hit the left side of the wall
-                    # self.rect.x = wall.rect.midright
                     self.move_right = False
-                    # print(self.rect.colliderect(wall.rect))
                 if self.x_change < 0: # Moving left; Hit the right side of the wall
-                    # self.rect.left = wall.rect.right
                     self.move_left = False
-                    # print(self.rect.colliderect(wall.rect))
                 if self.y_change > 0: # Moving down; Hit the top side of the wall
-                    # self.rect.bottom = wall.rect.top
                     self.move_down = False
                     self.move_up = False
-                    # print(self.rect.colliderect(wall.rect))
                 if self.y_change < 0: # Moving up; Hit the bottom side of the wall
-                    # self.rect.top = wall.rect.bottom
                     self.move_up = False
                     self.move_down = False
-                    # print(self.rect.colliderect(wall.rect))
 
     def did_hit_box(self, boxes):
         for box in boxes:
             if self.rect.colliderect(box.rect):
                 if self.x_change > 0: # Moving right; Hit the left side of the wall
                     self.move_right = False
-                    # print(self.rect.colliderect(wall.rect))
                 if self.x_change < 0: # Moving left; Hit the right side of the wall
-                    # self.rect.left = wall.rect.right
                     self.move_left = False
-                    # print(self.rect.colliderect(wall.rect))
                 if self.y_change > 0: # Moving down; Hit the top side of the wall
-                    # self.rect.bottom = wall.rect.top
                     self.move_down = False
                     self.move_up = False
-                    # print(self.rect.colliderect(wall.rect))
                 if self.y_change < 0: # Moving up; Hit the bottom side of the wall
-                    # self.rect.top = wall.rect.bottom
                     self.move_up = False
                     self.move_down = False
-                    # print(self.rect.colliderect(wall.rect))
-
+    #fully original. first transverses through boxes, then checks for collision.
+    #if collision is true, then move the box over in the appropriate direction by tilesize
+    #and decrease number of pushes by 1
     def move_box(self, boxes, walls):
         global push
         for box in boxes: 
@@ -165,14 +159,16 @@ class Character(pygame.sprite.Sprite):
                 push = True
                 if self.x_change > 0:
                     box.rect.x += settings.TILESIZE
-                    #self.hp -= 50
+                    self.score -= 1
                 elif self.x_change < 0:
                     box.rect.x -= settings.TILESIZE
-                    #self.hp -= 50
+                    self.score -= 1
                 elif self.y_change > 0:
                     box.rect.y += settings.TILESIZE
+                    self.score -=1
                 elif self.y_change < 0:
                     box.rect.y -= settings.TILESIZE
+                    self.score -= 1 
 
 #this checks if a box is going to be inside a wall, then moves the box right back!
     def box_hit_wall(self, boxes, walls):
@@ -182,10 +178,8 @@ class Character(pygame.sprite.Sprite):
                     if wall.rect.contains(box.rect):
                         if self.x_change > 0:
                             box.rect.x -= settings.TILESIZE
-                            #self.hp -= 50
                         elif self.x_change < 0:
                             box.rect.x += settings.TILESIZE
-                            #self.hp -= 50
                         elif self.y_change > 0:
                             box.rect.y -= settings.TILESIZE
                         elif self.y_change < 0:
@@ -193,21 +187,18 @@ class Character(pygame.sprite.Sprite):
     
     # this function takes the boxes group and makes temp. Temp is the boxes group EXCEPT the box we are pushing.
     # this will check if a box will be inside another box, and does the same thing as box_hit_wall
+    # got temp.remove/temp.add from https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Group
     def box_hit_box(self, boxes):
         for box in boxes:
             temp = boxes
             temp.remove(box)
-            # print(temp)
             if push == True:
-                # print("yes")
                 for box2 in temp:
                     if box2.rect.contains(box.rect):
                         if self.x_change > 0:
                             box2.rect.x -= settings.TILESIZE
-                            #self.hp -= 50
                         elif self.x_change < 0:
                             box2.rect.x += settings.TILESIZE
-                            #self.hp -= 50
                         elif self.y_change > 0:
                             box2.rect.y -= settings.TILESIZE
                         elif self.y_change < 0:

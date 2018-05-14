@@ -1,6 +1,7 @@
 import pygame
 
-#idea for Settings class from python crash course... the variables are mostly me except screen width and height i guess
+#idea for Settings class from python crash course... 
+#the variables about tilesize and setting the width/height of walls is from kids can code
 class Settings():
     def __init__(self):
         self.screen_width = 1024

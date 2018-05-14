@@ -24,7 +24,9 @@
 # #       if i have time, going to work on key boxes to open rooms and fixing the background and making the boxes show something
 # #       Fixed the background: using kids can code and drew lines
 # #       I made surface detection between boxes and walls, made entire puzzle level and made finish block to proceed through rooms
-# #       15 boxes each level
+# #       made starting screen, added limited pushes and game over screen...
+        
+
 import pygame
 import sys
 from settings import Settings
@@ -38,36 +40,34 @@ clock = pygame.time.Clock()
 walls = None  #to store wall objects
 walls = pygame.sprite.Group() #makes walls a sprite group
 boxes = None
-boxes = pygame.sprite.Group() #sane as walls
+boxes = pygame.sprite.Group() #same as walls
 temp = None
-temp = pygame.sprite.Group()
-game_over = False
-
+temp = pygame.sprite.Group() # for the temp group, i use for box detection
 
 gameboard_1 = [                             #this is the level 1                                        
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W     B                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     B                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "W     W                        W",
-    "WW    W                        W",
-    "W WWBWB          W             W",
-    "W     B       B  W             F",
-    "WBWWBWWWBWWWWWW  W             W",
-    "W     B                        W",
-    "W     WWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "WWWWBWW W   W                  W",
-    "W   C B       B                W",
+    "W  B  B        B               W",
+    "W WW  WWBWWWBW WBWWWWWWWWWB WWBW",
+    "W WW  W  W   W W   W   WWW W W W",
+    "W B  BW  B   W W   W  B WW   W W",
+    "W  BW WWBW  B    WW   W WW   W W",
+    "W W   W   W WWWW WWB  W WWBBWW W",
+    "WBW BWW   WBWWW  BW WWWW     W W",
+    "W  B  WBWBW WWWW   B  B WWW WW W",
+    "W  W WW   B   W   W WW  W  B W W",
+    "WWBW  W WBWWWWW  W  W   W  W W W",
+    "W   B B   W   W B   W   W  W W W",
+    "W   WBWWBWW   WW W W W    WWWW W",
+    "WB BW W  W   B  W BWBWW   W  B W",
+    "W  W  W  WBWW  B W     WWWW  W W",
+    "WW B  W    WW  W B     W  B  W W",
+    "W WWBWWWBW   W   W  WWW W WWW  W",
+    "W     B   WBWW  W  B    B  B   F",
+    "WBWWBWWWBWW   WWBW W WBBWWBWWBWW",
+    "W     B   WW   B   W    W      W",
+    "W     WWWWWWBWWWWWWWWWWWWW WWWBW",
+    "WWWWBWW W  W     B       B W   W",
+    "W   C B       B      B   B W   W",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
 ]
 
@@ -79,17 +79,19 @@ gameboard_1 = [                             #this is the level 1
 #             else:
 #                 return False
 
-#this is technically from python crash course but i do absolutely need this
 def run_game():
     x_level_coor = 0
     y_level_coor = 0
-    #^ these are used to tell the program where the walls should be!
+    # ^ these are used to tell the program where the walls should be!
     pygame.init()
-    font_name = pygame.font.match_font('arial')
+    font_name = pygame.font.match_font('times new roman')
     settings = Settings()
     screen = pygame.display.set_mode([settings.screen_width, settings.screen_height])
     pygame.display.set_caption("Jacob's Game")
+    pygame.mixer.music.load("music/burbank-sorry-i-like-you_GgVcgbtHY9k.mp3")
+    #i took everything from python crash course except music...
 
+    #taken straight from kids can code, most initial set up for font stuff is kids can code
     def draw_text(surf, text, size, x, y):
         font = pygame.font.Font(font_name, size)
         text_surface = font.render(text, True, [255,255,255])
@@ -125,19 +127,40 @@ def run_game():
         x_level_coor = 0
     hero = mc(screen, pos_hero)
 
-#from kids can code, thank you for the begin screen
+    #from kids can code, thank you for the beginning screen
     def beginning_screen():
         draw_text(screen, "Welcome to the T-Maze", 64, settings.screen_width / 2, settings.screen_height / 4)
-        draw_text(screen, "Use WASD to move. W to move up, A to move left, D to move right, and S to move down. You can push the red boxes! Press Space to do so, but be careful, you don't want to get tired...", 14,
+        draw_text(screen, "Use WASD to move. W to move up, A to move left, D to move right, and S to move down.", 25,
         settings.screen_width / 2, settings.screen_height / 2)
-        draw_text(screen, "Press the letter b to begin...", 21, settings.screen_width / 2, settings.screen_height * 3 / 4)
+        draw_text(screen, "You can push the red boxes! Press Space to do so, but be careful, you don't want to get tired...", 18,
+        settings.screen_width / 2, settings.screen_height * 3  / 5)
+        draw_text(screen, "Press the letter b to begin...", 35, settings.screen_width / 2, settings.screen_height * 3 / 4)
         pygame.display.flip()
 
+    #original code
+    def score():
+        if hero.score > 1:
+            draw_text(screen, "Pushes Left: "+ str(hero.score), 20,
+            settings.screen_width / 2, settings.screen_height / 276)
+        else:
+            draw_text(screen, "One Push Left!", 20,
+            settings.screen_width / 2, settings.screen_height / 276)
+    #template from kids can code
+    def end_screen():
+        draw_text(screen, "Game Over!", 64, settings.screen_width / 2, settings.screen_height / 2)
+        #i seperated this into two logic statements so that it makes grammatical sense.
+        if hero.score == 1:
+            draw_text(screen, "You had one push left.",64,  settings.screen_width / 2, settings.screen_height*3/4)
+        else:
+            draw_text(screen, "You had " +str(hero.score)+ " pushes left.",64,  settings.screen_width / 2, settings.screen_height*3/4)
+        pygame.display.flip()
     while True:
+        #this is for beginning screen, if waiting is true, player is waiting to start.
         if hero.waiting == True:
             beginning_screen()
             gf.check_events(hero, boxes, walls)
-        elif hero.waiting == False:
+        #this is running the actual game
+        elif hero.waiting == False and hero.game_over == False:
             screen.fill([0, 0, 0])
             draw_grid()
             gf.check_events(hero, boxes, walls)
@@ -145,8 +168,17 @@ def run_game():
             walls.draw(screen)
             boxes.draw(screen)
             screen.blit(fin.image, fin.rect)
-            #this updates hero position all the time
+            score()
             gf.update_screen(settings, screen, hero, walls, boxes)
-            # if fin.rect.contains(hero.rect):
-
+        #this is the game over screen, it shows it and fades out music
+        if hero.rect.x > 1000 or hero.score == 0:
+            hero.game_over = True
+            pygame.mixer.music.fadeout(1000)
+            gf.check_events(hero, boxes, walls)
+            if hero.score == 0:
+                screen.fill([89, 0, 0])
+            else:
+                screen.fill([0, 0, 105])
+            end_screen()
+          
 run_game()
