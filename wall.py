@@ -1,8 +1,6 @@
 import pygame 
 from settings import Settings
-
 settings = Settings()
-
 #the template for all of these classes are from programarcadegames.com
 
 class Wall(pygame.sprite.Sprite):   

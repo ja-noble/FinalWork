@@ -2,7 +2,6 @@
 #sprite sheet from http://programarcadegames.com/python_examples/en/sprite_sheets/
 
 import pygame
-#import pygame.sprite
 from wall import Wall
 from wall import Box
 import pyganim

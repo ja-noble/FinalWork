@@ -16,16 +16,15 @@
 # # week 7? fixed the problem that blit every time a collision occured and added images. Will make image blit correcting
 # #   image when blitting in a direction and will start dirty rect animation blitting
 
-# # week 8?: fixed problem of playing going through walls. Need to make the dimensions at least the same size! i made the char
+# # week 8?: fixed problem of playing going through walls. Need to make the dimensions at least the same size or smaller! i made the char
 # # #     able to face the direction you are going. Now working on making the actual level
 # # #  and multiple levels like in http://programarcadegames.com/python_examples/f.php?file=maze_runner.py
 
-# # week 9: finishing the actual level and multiple rooms. made boxes player can move based on collision.
+# # week 9: finishing the actual level. made boxes player can move based on collision.
 # #       if i have time, going to work on key boxes to open rooms and fixing the background and making the boxes show something
 # #       Fixed the background: using kids can code and drew lines
 # #       I made surface detection between boxes and walls, made entire puzzle level and made finish block to proceed through rooms
 # #       made starting screen, added limited pushes and game over screen...
-        
 
 import pygame
 import sys
@@ -156,7 +155,8 @@ def run_game():
         pygame.display.flip()
     while True:
         #this is for beginning screen, if waiting is true, player is waiting to start.
-        if hero.waiting == True:
+        if hero.waiting == True and hero.game_over == False:
+            screen.fill([0,0,0])
             beginning_screen()
             gf.check_events(hero, boxes, walls)
         #this is running the actual game

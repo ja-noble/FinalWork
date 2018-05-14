@@ -32,9 +32,14 @@ def check_events(mc, boxes, walls):
                 print(mc.rect.y)
                 #this is for debugging so i know where the player is exactly
             if event.key == pygame.K_b:
-                mc.waiting = False
-                if mc.game_over == False:
+                if mc.game_over == False and mc.waiting == True:
                     pygame.mixer.music.play(-1)
+                mc.waiting = False
+            if event.key == pygame.K_r:
+                if mc.game_over == True:
+                    mc.score = 76
+                    mc.waiting = True
+                    mc.game_over = False
         elif event.type == pygame.KEYUP:
             #toggles T/F and in mc class, will move if key down, from crash course
             if event.key == pygame.K_d:
